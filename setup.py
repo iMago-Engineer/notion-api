@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="notio_-api",
+    name="notion-api",
     version="0.0.1",
     author="ik-y",
     packages=find_packages(),
