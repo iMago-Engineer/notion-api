@@ -25,6 +25,7 @@ class Notion:
     self.cache = dict()
     self.cache["pages"] = dict()
     self.cache["databases"] = dict()
+    self.cache["blocks"] = dict()
 
   def save_cache(self):
     open(".notion.cache", "w").write(json.dumps(self.cache))
@@ -36,6 +37,20 @@ class Notion:
     response = requests.get(url, headers=self.headers)
     self.cache["pages"][page_id] = response.json()
     self.save_cache()
+    return response.json()
+
+  def get_one_block(self, block_id):
+    if block_id in self.cache["blocks"].keys():
+      return self.cache["blocks"][block_id]
+    url = "{}blocks/{}".format(self.api, block_id)
+    response = requests.get(url, headers=self.headers)
+    self.cache["blocks"][block_id] = response.json()
+    self.save_cache()
+    return response.json()
+
+  def get_block_children(self, block_id):
+    url = "{}blocks/{}/children?page_size=100".format(self.api, block_id)
+    response = requests.get(url, headers=self.headers)
     return response.json()
 
   def get_database(self, database_id):
@@ -51,3 +66,4 @@ class Notion:
     url = "{}databases/{}/query".format(self.api, database_id)
     response = requests.post(url, headers=self.headers)
     return response.json()
+
